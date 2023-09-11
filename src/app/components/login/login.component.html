@@ -1,0 +1,49 @@
+<h2 class="heading p-bot-20">Sign In</h2>
+<!-- <div class="social-login">
+  <button class="btn btn-block fb-btn" (click)="signInWithFB()">
+    <i class="fa fa-facebook-f" aria-hidden="true"></i> Continue with Facebook
+  </button>
+</div> -->
+<div class="social-login m-top-10">
+  <button class="btn btn-block google-btn" (click)="signInWithGoogle()">
+    <i class="fa fa-google" aria-hidden="true"></i> Continue with Google
+  </button>
+</div>
+<div class="col-xs-12 text-center" style="padding: 10px">
+  ----------------------- OR -----------------------
+</div>
+<form [formGroup]="lForm" (ngSubmit)="login(lForm.value)">
+  <div class="form-group">
+    <input type="email" class="form-control" formControlName="email" placeholder="Email">
+    <div class="help-block with-errors" *ngIf="hasFormErrors.email.length > 0">
+      <ul class="list-unstyled list-errors">
+        <li *ngFor="let error of hasFormErrors.email">{{error}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="form-group">
+    <input type="password" class="form-control" formControlName="pwd" placeholder="Password">
+    <div class="help-block with-errors" *ngIf="hasFormErrors.pwd.length > 0">
+      <ul class="list-unstyled list-errors">
+        <li *ngFor="let error of hasFormErrors.pwd">{{error}}</li>
+      </ul>
+    </div>
+    <div class="form-group">
+      <div class="form-group p-5" *ngIf="hasFormErrors.pageError.length > 0">
+        <div class="alert-danger"><span *ngFor="let msg of hasFormErrors.pageError">{{msg}}</span></div>
+      </div>
+      <div class="form-group p-5" *ngIf="hasFormErrors.pageSuccess.length > 0">
+        <div class="alert-success"><span *ngFor="let msg of hasFormErrors.pageSuccess">{{msg}}</span></div>
+    </div>
+    </div>
+  </div>
+  <div class="form-group text-right">
+    <a routerLink="/register">Forgot Password</a>
+  </div>
+  <div class="p-bot-20">
+    <button type="submit" class="btn btn-block rounded-btn m-top-10 m-bot-30">Sign In</button>
+  </div>
+  <div class="p-bot-20 text-center">
+    Don't have an account? <a routerLink="/register"><b>Free Sign Up</b></a>
+  </div>
+</form>

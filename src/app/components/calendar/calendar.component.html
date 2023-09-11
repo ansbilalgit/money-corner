@@ -1,0 +1,219 @@
+<div class="container-fluid bg-white p-top-50">
+    <div class="container no-padding-mobile">
+      <div class="search p-top-20">
+        <h1 class="text-center">Calendar</h1>
+        <div class="row">
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>From</label>
+              <input type="date" class="form-control" [(ngModel)]="fromDate" (change)="loadData()">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>To</label>
+              <input type="date" class="form-control" [(ngModel)]="toDate" (change)="loadData()">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Country</label>
+              <select class="form-control" [(ngModel)]="country" (change)="economicPage=1">
+                <option value="">Select Country</option>
+                <option *ngFor="let country of CountriesLists" value="{{country.Code}}">{{country.Name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col-md-2 p-top-30">
+            <aside style="height: auto !important;">
+              <div class="navi">
+                <ul>
+                  <li><a href="javascript:void(0);" (click)="scroll(economic)">Economic</a></li>
+                  <li><a href="javascript:void(0);" (click)="scroll(divideend)">Dividend</a></li>
+                  <li><a href="javascript:void(0);" (click)="scroll(IPO)">IPO</a></li>
+                  <li><a href="javascript:void(0);" (click)="scroll(earnings)">Earnings</a></li>
+                  <li><a href="javascript:void(0);" (click)="scroll(earnings)">Stock Split</a></li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+          <div class="col-md-10">
+            <div class="row" #economic>
+              <div class="col-md-12">
+                <div class="st-table">
+                  <div class="p-top-10">
+                    <h2>Economic Calendar</h2>
+                  </div>
+                  <div class="scroll-container">
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <th>Event</th>
+                          <th>Date</th>
+                          <th>Country</th>
+                          <th>Actual</th>
+                          <th>Previous</th>
+                          <th>Change</th>
+                          <th>Change Percentage</th>
+                          <th>Estimate</th>
+                        </tr>
+                        <ng-container *ngIf="( EconomicLists |  countryFilter:country) as result">
+                        <tr *ngFor="let economic of result | paginate: { id: 'economic', itemsPerPage: itemsPerPage, currentPage: economicPage}">
+                          <td class="glblue"><a href="javascript:Void(0);">{{economic.event}}</a></td>
+                          <td>{{economic.date |date : 'mediumDate'}}</td>
+                          <td>{{economic.country}}</td>
+                          <td>{{economic.actual}}</td>
+                          <td>{{economic.previous}}</td>
+                          <td>{{economic.change}}</td>
+                          <td>{{economic.changePercentage}}</td>
+                          <td>{{economic.estimate}}</td>
+                        </tr>
+                        <tr *ngIf="result.length==0">
+                          <td colspan="8" class="text-center">No Records found</td>
+                        </tr>
+                      </ng-container>
+                        
+                      </tbody>
+                    </table>
+                    <pagination-controls id="economic" (pageChange)="economicPage = $event"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>  
+            <div class="row" #divideend>
+              <div class="col-md-12">
+                <div class="st-table">
+                  <div class="p-top-10">
+                    <h2>Dividend Calendar</h2>
+                  </div>
+                  <div class="scroll-container">
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>Date</th>
+                          <th>Label</th>
+                          <th>Adj Divid End</th>
+                        </tr>
+                        <tr *ngFor="let divideend of DivideEndLists | paginate: { id: 'divideend', itemsPerPage: itemsPerPage, currentPage: divideendPage}">
+                          <td class="glblue"><a href="#/stock/{{divideend.symbol}}">{{divideend.symbol}}</a></td>
+                          <td>{{divideend.date |date : 'mediumDate'}}</td>
+                          <td>{{divideend.label}}</td>
+                          <td>{{divideend.adjDividend}}</td>
+                        </tr>
+                        <tr *ngIf="DivideEndLists.length==0">
+                          <td colspan="4" class="text-center">No Records found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <pagination-controls id="divideend" (pageChange)="divideendPage = $event"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div>   
+            <div class="row" #IPO>
+              <div class="col-md-12 no-padding">
+                <div class="col-sm-12 st-table no-padding-mobile">
+                  <div class="p-top-10">
+                    <h2>IPO Calendar</h2>
+                  </div>
+                  <div class="scroll-container">              
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <th>Company</th>
+                          <th>Symbol</th>
+                          <th>Date</th>
+                          <th>Exchange</th>
+                          <th>Actions</th>
+                          <th>Shares</th>
+                          <th>Price Range</th>
+                          <th>Market Cap</th>
+                        </tr>
+                        <tr *ngFor="let ipo of IPOLists | paginate: { id: 'ipo', itemsPerPage: itemsPerPage, currentPage: ipoPage}">
+                          <td class="glblue"><a href="javascript:Void(0);">{{ipo.company}}</a></td>
+                          <td><a href="#/stock/{{ipo.symbol}}">{{ipo.symbol}}</a></td>
+                          <td>{{ipo.date |date : 'mediumDate'}}</td>
+                          <td>{{ipo.exchange}}</td>
+                          <td>{{ipo.actions}}</td>
+                          <td>{{ipo.shares}}</td>
+                          <td>{{ipo.priceRange}}</td>
+                          <td>{{ipo.marketCap}}</td>
+                        </tr>
+                        <tr *ngIf="IPOLists.length==0">
+                          <td colspan="8" class="text-center">No Records found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <pagination-controls id="ipo" (pageChange)="ipoPage = $event"></pagination-controls>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="row" #earnings>
+              <div class="col-md-4">
+                <div class="st-table">
+                  <div class="p-top-10">
+                    <h2>Earnings Calendar</h2>
+                  </div>
+                  <div class="scroll-container">
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>Date</th>
+                          <th>EPS Estimated</th>
+                        </tr>
+                        <tr *ngFor="let earnings of EarningsLists | paginate: { id: 'earnings', itemsPerPage: itemsPerPage, currentPage: earningsPage}">
+                          <td class="glblue"><a href="#/stock/{{earnings.symbol}}">{{earnings.symbol}}</a></td>
+                          <td>{{earnings.date |date : 'mediumDate'}}</td>
+                          <td>{{earnings.epsEstimated}}</td>
+                        </tr>
+                        <tr *ngIf="EarningsLists.length==0">
+                          <td colspan="3" class="text-center">No Records found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <pagination-controls id="earnings" (pageChange)="earningsPage = $event"></pagination-controls>
+                  </div>  
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="st-table">
+                  <div class="p-top-10">
+                    <h2>Stock Split Calendar</h2>
+                  </div>
+                  <div class="scroll-container">
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>Date</th>
+                          <th>Label</th>
+                          <th>Numerator</th>
+                          <th>Denominator</th>
+                        </tr>
+                        <tr *ngFor="let stocksplit of StockSplitLists | paginate: { id: 'stockSplit', itemsPerPage: itemsPerPage, currentPage: stockSplitPage}">
+                          <td class="glblue"><a href="#/stock/{{stocksplit.symbol}}">{{stocksplit.symbol}}</a></td>
+                          <td>{{stocksplit.date |date : 'mediumDate'}}</td>
+                          <td>{{stocksplit.label}}</td>
+                          <td>{{stocksplit.numerator}}</td>
+                          <td>{{stocksplit.denominator}}</td>
+                        </tr>
+                        <tr *ngIf="StockSplitLists.length==0">
+                          <td colspan="5" class="text-center">No Records found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <pagination-controls id="stockSplit" (pageChange)="stockSplitPage = $event"></pagination-controls>
+                  </div>  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

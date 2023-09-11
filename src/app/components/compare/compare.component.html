@@ -1,0 +1,278 @@
+<div class="container-fluid bg-white plain-page">
+    <div class="container">
+        <div class="row search p-bot-50">
+            <div class="col-sm-12">
+                <div class="container-wrap text-center">
+                    <h1 class="heading p-bot-20 m-top-100">Compare Stocks</h1>
+                    <div class="row">
+                        <div class="col-md-1 hide-xs"></div>
+                        <div class="col-md-9 col-xs-12 p-4-imp">
+                            <div class="search-block">
+                                <div class="col-xs-9 col-sm-10 no-padding">
+                                    <!-- <tag-input [(ngModel)]="items" [maxItems]="3" #tagInputDropdown
+                                        (onAdd)="onAdd($event)" [onlyFromAutocomplete]="true">
+                                        <tag-input-dropdown [autocompleteObservable]="requestAutocompleteItems"
+                                            [displayBy]="'name'" [identifyBy]="'symbol'">
+                                            <ng-template let-item="item">
+                                                {{ item.symbol }} - {{ item.name }}
+                                            </ng-template>
+                                        </tag-input-dropdown>
+                                    </tag-input> -->
+
+                                    <!-- <tag-input [(ngModel)]="items" (onTextChange)="onTextChange($event)" [maxItems]="3" #tagInputDropdown
+                                        (onAdd)="onAdd($event)" [onlyFromAutocomplete]="true">
+                                        <tag-input-dropdown [showDropdownIfEmpty]="true"
+                                            [autocompleteItems]="filteredStocks" [displayBy]="'name'"
+                                            [identifyBy]="'symbol'">
+                                            <ng-template let-item="item">
+                                                {{ item.symbol }} - {{ item.name }}
+                                            </ng-template>
+                                        </tag-input-dropdown>
+                                    </tag-input> -->
+
+                                    <div class="compare-search" (click)="focusSearchField()">
+                                        <div class="stock" *ngFor="let stockBtn of stockBtns"
+                                            (click)="onRemove(stockBtn)"><span class="stock-name">{{stockBtn.symbol}}
+                                            </span></div>
+                                        <input [(ngModel)]="searchStr" #search *ngIf="stockBtns.length < 3"
+                                            class="search-inbox" (keyup)="onTextChange()" />
+                                    </div>
+                                    <div class="full-block no-padding search-results text-left"
+                                        *ngIf="searchStr !=='' && filteredStocks.length > 0">
+                                        <div *ngFor="let item of filteredStocks" (click)="onAdd(item)">
+                                            {{item.symbol}} - {{item.name}}</div>
+                                    </div>
+                                    <div class="full-block no-padding search-results text-left"
+                                        *ngIf="searchStr.length > 1 && filteredStocks.length == 0">
+                                        <div *ngFor="let item of [0]">{{item}} Results found!!</div>
+                                    </div>
+
+                                </div>
+                                <div class="col-xs-3 col-sm-2 no-padding">
+                                    <button class="rounded-btn pull-left" (click)="compareStocks()">Compare</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid lt-white" #compare [ngClass]="{'invisible': !showHistoPriceChart}">
+    <div class="container p-top-50 p-bot-50 small-devices">
+        <div class="row flex-row">
+            <div class="col-md-6 ignore-me flex-col no-padding ignore-p-mobile">
+                <div class="card-container">
+                    <h4 class="heading p-bot-20" *ngIf="keys.length >= 2">Stock Performance</h4>
+                    <ul class="nav nav-tabs" *ngIf="keys.length >= 2">
+                        <li class="active"><a href="javascript:void(0)">Last 3Years</a></li>
+                    </ul>
+                    <div id="histoPriceChart" class="col-sm-12 m-top-20"></div>
+                </div>
+            </div>
+            <div class="col-md-6 ignore-me flex-col ignore-p-mobile">
+                <div class="card-container fr-ratios">
+                    <h4 class="heading p-bot-20" *ngIf="keys.length >= 2">Financial Ratios</h4>
+                    <ul class="nav nav-tabs" *ngIf="keys.length >= 2">
+                        <li class="active"><a data-toggle="tab" href="#profitablity"
+                                (click)="profitablity('ROE')">Profitablity</a></li>
+                        <li><a data-toggle="tab" href="#leverage" (click)="profitablity('DTE')">Leverage & Liquidity</a>
+                        </li>
+                        <li><a data-toggle="tab" href="#valuation" (click)="profitablity('PER')">Valuation</a></li>
+                    </ul>
+                    <div class="tab-content scroll-container">
+                        <div class="tab-pane fade in active sm-width-chart">
+                            <div class="p-top-10" style="height: 50px;"
+                                *ngIf="keys.length >= 2 && (frActiveTab === 'NPM' || frActiveTab==='ROAC' || frActiveTab==='ROCE' || frActiveTab==='ROE')">
+                                <button (click)="profitablity('ROE')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='ROE'}">ROE</button>
+                                <button (click)="profitablity('ROCE')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='ROCE'}">ROCE</button>
+                                <button (click)="profitablity('ROAC')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='ROAC'}">ROA</button>
+                                <button (click)="profitablity('NPM')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='NPM'}">Net Profit Margin</button>
+                            </div>
+                            <div class="p-top-10" style="height: 50px;"
+                                *ngIf="keys.length >= 2 && (frActiveTab === 'QR' || frActiveTab==='ICR' || frActiveTab==='CR' || frActiveTab==='DTE')">
+                                <button (click)="profitablity('DTE')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='DTE'}">Debt To Equity</button>
+                                <button (click)="profitablity('CR')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='CR'}">Current Ratio</button>
+                                <button (click)="profitablity('ICR')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='ICR'}">Interest Coverage Ratio</button>
+                                <button (click)="profitablity('QR')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='QR'}">Quick Ratio</button>
+                            </div>
+                            <div class="p-top-10" style="height: 50px;"
+                                *ngIf="keys.length >= 2 && (frActiveTab === 'PCF' || frActiveTab==='PBV' || frActiveTab==='EBR' || frActiveTab==='PER')">
+                                <button (click)="profitablity('PER')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='PER'}">PE Ratio</button>
+                                <button (click)="profitablity('EBR')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='EBR'}">EB/EBIDTA Ratio</button>
+                                <button (click)="profitablity('PBV')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='PBV'}">Price To Book Value </button>
+                                <button (click)="profitablity('PCF')" class="btn pull-left"
+                                    [ngClass]="{'btn-primary': frActiveTab==='PCF'}">Price To Cash Flow</button>
+                            </div>
+                            <div id="histoBarChart" class="col-sm-12 m-top-20"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row flex-row">
+            <div class="col-md-12 flex-col">
+                <div class="text-center">
+                    <h3 class="heading">Compare Key Metrics</h3>
+                </div>
+            </div>
+            <div class="col-md-12 ignore-me flex-col metric-no-pad">
+                <div class="card-container custom-container scroll-container">
+                    <div class="row small-width-keymetric">
+                        <div class="col-xs-3 no-padding small-sc-keytd">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="heading-td">
+                                        <th>PARTICULAR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Price</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Market Cap</td>
+                                    </tr>
+                                    <tr>
+                                        <td>EPS <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Earnings per share (EPS) is calculated as a company's profit divided by the outstanding shares of its common stock. The resulting number serves as an indicator of a company's profitability.</span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Price To Book Value <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">The price-to-book value ratio, expressed as a multiple (i.e. how many times a company's stock is trading per share compared to the company's book value per share), is an indication of how much shareholders are paying for the net assets of a company.</span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>PE Ratio <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">The financial reporting of both companies and investment research services use a basic earnings per share (EPS) figure divided into the current stock price to calculate the P/E multiple (i.e. how many times a stock is trading (its price) per each dollar of EPS).</span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dividend Yield <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Income investors value a dividend-paying stock, while growth investors have little interest in dividends, preferring to capture large capital gains. Whatever your investing style, it is a matter of historical record that dividend-paying stocks have performed better than non-paying-dividend stocks over the long term.</span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ROE <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">ROE this ratio calculates how much money is made based on the investors' investment in the company.investors want to see a high return on equity ratio because this indicates that the company is using its investors' funds effectively.</span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ROCE <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">ROCE shows investors how many dollars in profits each dollar of capital employed generates.</span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>EnterpriseValue <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Overall, this measurement allows investors to assess a company on the same basis as that of an acquirer. As a rough calculation, enterprise value multiple serves as a proxy for how long it would take for an acquisition to earn enough to pay off its costs in years(assuming no change in EBITDA).</span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sector PE</td>
+                                    </tr>
+                                    <tr>
+                                        <td>EV to EBITDA <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">EBITperRevenue.</span></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Outstanding Shares</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Book Value<i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip"></span></i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Website</td>
+                                    </tr>
+                                    <tr>
+                                        <td>52 Week High</td>
+                                    </tr>
+                                    <tr>
+                                        <td>52 Week Low</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fair value <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Helps investors determine whether a stock is trading at, below, or above its fair value estimate,A price/fair value ratio below 1 suggests the stock is trading at a discount to its fair value, while a ratio above 1 suggests it is trading at a premium to its fair value.</span></i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-3 no-padding small-sc-keytd" *ngFor="let key of keys">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="heading-td">
+                                        <th>{{key.name}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${{stocksKeyMetrics[key.name].price}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>${{stocksKeyMetrics[key.name].marketCap}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].ePS}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].priceToBookValue}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].pERatio}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].dividendYield}}%&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].rOE}}%&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].rOCE}}%&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].enterpriseValue}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].sectorPE}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].eVtoEBITDA}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].outstandingShares}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].bookValue}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="{{stocksKeyMetrics[key.name].website}}"
+                                                target="_blank">{{stocksKeyMetrics[key.name].website}}</a>&nbsp;
+                                            &nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].val52WeekHigh}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].val52WeekLow}}&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{stocksKeyMetrics[key.name].fairValue}}&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="global-loader-container active" *ngIf="globalService.loaderState">
+    <div class="loader"></div>
+</div>

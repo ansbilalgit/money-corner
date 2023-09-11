@@ -1,0 +1,61 @@
+<div class="container-fluid lt-white" id="view-port-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 hide-xs"></div>
+            <div class="col-md-4 col-xs-12">
+                <div class="card-container">
+                    <h2 class="heading p-bot-20">Sign Up</h2>
+                    <form [formGroup]="newUserForm" (ngSubmit)="addNewUser(newUserForm.value)">
+                        <div class="form-group">
+                            <input type="text"  class="form-control" formControlName="name" maxlength="30" placeholder="Name">
+                            <div class="help-block with-errors" *ngIf="hasFormErrors.name.length > 0">
+                                <ul class="list-unstyled list-errors">
+                                    <li *ngFor="let error of hasFormErrors.name">{{error}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" formControlName="email" maxlength="30" placeholder="Email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
+                            <div class="help-block with-errors" *ngIf="hasFormErrors.email.length > 0">
+                                <ul class="list-unstyled list-errors">
+                                    <li *ngFor="let error of hasFormErrors.email">{{error}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" formControlName="pwd" maxlength="30" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" formControlName="repwd" maxlength="30" placeholder="Confirm Password">
+                            <div class="help-block with-errors" *ngIf="hasFormErrors.pwd.length > 0">
+                                <ul class="list-unstyled list-errors">
+                                    <li *ngFor="let error of hasFormErrors.pwd">{{error}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" formControlName="mobile" maxlength="13" placeholder="Phone (Optional)">
+                        </div>
+                        <div class="form-group p-5" *ngIf="hasFormErrors.pageSuccess.length > 0">
+                            <div class="alert-success"><span *ngFor="let msg of hasFormErrors.pageSuccess">{{msg}}</span></div>
+                        </div>
+                        <div class="form-group p-5" *ngIf="hasFormErrors.pageError.length > 0">
+                            <div class="alert-danger"><span *ngFor="let msg of hasFormErrors.pageError">{{msg}}</span></div>
+                        </div>
+                        <div class="p-bot-20">
+                            <button type="submit" class="btn btn-block rounded-btn m-top-10 m-bot-30">Sign Up</button>
+                        </div>
+                        <div class="p-bot-20 text-center">
+                            Already have an account? <a routerLink="/account"><b>Sign In Here</b></a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4 hide-xs"></div>
+        </div>
+    </div>
+</div>
+
+<div class="global-loader-container active" *ngIf="globalService.loaderState">
+    <div class="loader"></div>
+</div>

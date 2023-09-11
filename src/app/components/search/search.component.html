@@ -1,0 +1,307 @@
+<div class="container-fluid lt-white" id="view-port-container">
+    <div class="container">
+        <div class="row">
+            <owl-carousel-o [options]="customOptions" *ngIf="carouselState">
+                <ng-container *ngFor="let data of GlobalIndexData">
+                    <ng-template carouselSlide>
+                        <div class="carousel-card bg-white">
+                            <div *ngIf="isPossitive(data.changesPercentage)" class="pull-left status green">
+                                <i class="fa fa-arrow-up"></i>
+                            </div>
+                            <div *ngIf="!isPossitive(data.changesPercentage)" class="pull-left status red">
+                                <i class="fa fa-arrow-down"></i>
+                            </div>
+                            <div class="pull-right info">
+                                <div class="text-ellipsis" [title]="data.name">{{data.name}}</div>
+                                <div class="price-info">
+                                    <span class="pull-left price">${{data.price}}</span>
+                                    <span class="pull-right positive"
+                                        *ngIf="isPossitive(data.changesPercentage)">+{{trimMe(data.changesPercentage)}}</span>
+                                    <span class="pull-right negative"
+                                        *ngIf="!isPossitive(data.changesPercentage)">{{trimMe(data.changesPercentage)}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ng-container>
+            </owl-carousel-o>
+            <div class="text-center" *ngIf="!carouselState">
+                <div class="content-loader"></div>
+            </div>
+        </div>
+        <div class="row search p-top-50 smptop-0">
+            <div class="col-sm-12">
+                <div class="container-wrap text-center">
+                    <div class="row">
+                        <div class="col-md-2 hide-xs"></div>
+                        <div class="col-md-8 col-xs-12">
+                            <div class="search-block">
+                                <div class="col-xs-8 no-padding">
+                                    <input type="text" [value]="strVal" (input)="initSerach($event.target.value)"
+                                        class="search-field" placeholder="Company or stock ticker...">
+                                </div>
+                                <div class="col-xs-4 no-padding">
+                                    <button class="rounded-btn pull-left" (click)="onSerach()" *ngIf="globalService.allStocksData?.length > 0">Search</button>
+                                    <button class="rounded-btn pull-left" *ngIf="globalService.allStocksData?.length == 0"><i
+                                            class="fa fa-refresh animate-rotate"></i></button>
+
+
+                                </div>
+                                <div class="col-xs-8 no-padding search-results text-left"
+                                    *ngIf="strVal !=='' && searchData?.length > 0 && searchActionItems?.length === 0 && dataFired">
+                                    <div *ngFor="let item of searchData" routerLink="/stock/{{item.symbol}}">
+                                        {{item.symbol}} - {{item.name}}</div>
+                                </div>
+                                <div class="col-xs-8 no-padding search-results text-left"
+                                    *ngIf="strVal !=='' && searchData?.length === 0 && searchActionItems?.length === 0 && dataFired">
+                                    <div *ngFor="let item of [0]">{{item}} Results found!!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12"
+                            *ngIf="strVal !=='' && searchActionItems?.length > 0 && searchData?.length === 0 && searchFired">
+                            <div class="text-left">
+                                <h3>{{searchActionItems?.length}} Results found for "{{strVal}}"</h3>
+                            </div>
+                            <div class="col-xs-12 no-padding search-action-results text-left"
+                                *ngIf="strVal !=='' && searchActionItems?.length > 0">
+                                <div *ngFor="let sItem of searchActionItems" routerLink="/stock/{{sItem.symbol}}">
+                                    {{sItem.symbol}} - {{sItem.name}}
+                                    <span class="pull-right">View Stock</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12"
+                            *ngIf="strVal !=='' && searchActionItems?.length === 0 && searchData?.length === 0&& searchFired">
+                            <div class="text-left">
+                                <h3>0 Results found for "{{strVal}}"!!</h3>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="text-center p-top-5 ligher-sub-text">
+                                Example searches:
+                                <!-- <a href="#/stock/RELIANCE.NS">Reliance</a>, -->
+                                <a href="#/stock/AAPL">Apple</a>,
+                                <a href="#/stock/TSLA">Tesla</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid bg-white">
+
+    <div class="container no-padding-mobile">
+        <div *ngIf="searchFired == false " class="search p-top-20">
+            <div class="col-md-6 no-padding">
+                <div class="st-table">
+                    <div class="p-top-10">
+                        <h2>Top Gainers</h2>
+                    </div>
+                    <div class="scroll-container" *ngIf="topGainersState">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Change</th>
+                                    <th>ChangesPercentage</th>
+                                </tr>
+                                <tr *ngFor="let gainers of topGainers |  slice:0:10">
+                                    <td class="glblue"><a href="#/stock/{{gainers.ticker}}">{{ gainers.ticker}}</a></td>
+                                    <td title="{{gainers.companyName}}"><span
+                                            class="width-200 text-ellipsis">{{gainers.companyName}}</span></td>
+                                    <td>${{gainers.price}}</td>
+                                    <td class="glgreen">{{gainers.changes}}</td>
+                                    <td>{{gainers.changesPercentage}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf="!topGainersState">
+                        <div class="content-loader"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 no-padding">
+                <div class="col-sm-12 st-table no-padding-mobile">
+                    <div class="p-top-10">
+                        <h2>Top Losers</h2>
+                    </div>
+                    <div class="scroll-container" *ngIf="topLosersState">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Change</th>
+                                    <th>ChangesPercentage</th>
+                                </tr>
+                                <tr *ngFor="let losers of topLosers |  slice:0:10">
+                                    <td class="glblue"><a href="#/stock/{{losers.ticker}}">{{ losers.ticker}}</a></td>
+                                    <td title="{{losers.companyName}}"><span
+                                            class="width-200 text-ellipsis">{{losers.companyName}}</span></td>
+                                    <td>${{losers.price}}</td>
+                                    <td class="glred">{{losers.changes}}</td>
+                                    <td>{{losers.changesPercentage}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf="!topLosersState">
+                        <div class="content-loader"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row search p-bot-30">
+            <div class="col-sm-12 no-padding">
+                <div class="col-sm-12 st-table">
+                    <div class="p-top-10">
+                        <h2>Market News</h2>
+                    </div>
+                    <div *ngIf="stockNewsState">
+                        <div class="col-xs-6 col-sm-4 col-md-2 no-padding" *ngFor="let data of stockData">
+                            <div class="p-bot-20 m-right-20">
+                                <a href="{{data.url}}" class="block-ele" target="_blank" rel="nofollow noopener">
+                                    <img src="{{data.image}}" class="img-responsive"
+                                        style="border-radius: 10px 10px 0px 0px;">
+                                    <div class="p-5 lt-white" style="border-radius: 0px 0px 10px 10px;">
+                                        <div class="custom-text-ellipsis">{{data.title}}</div>
+                                        <div class="full-block text-right text-ellipsis">- {{data.site}}</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!stockNewsState">
+                        <div class="content-loader"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-sm-5 no-padding">
+                <div class="col-sm-12 st-table">
+                    <div class="p-top-10">
+                        <h2>Recent IPOs</h2>
+                    </div>
+                    <table class="full-block">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">AGGR</a></td>
+                                <td>Agile Growth</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">ESM</a></td>
+                                <td>ESM Acquisition</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">FRW</a></td>
+                                <td>PWP Forward Acquisition I</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">FRXB</a></td>
+                                <td>Forest Road Acquisition II</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">SBII</a></td>
+                                <td>Sandbridge X2</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">VAQC</a></td>
+                                <td>Vector Acquisition II</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">DTOC</a></td>
+                                <td>Digital Transformation Opportunities</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 10</td>
+                                <td><a href="#">CLAA</a></td>
+                                <td>Colonnade Acquisition II</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 st-table">
+                    <div class="p-top-10">
+                        <h2>Upcoming IPOs</h2>
+                    </div>
+                    <table class="full-block">
+                        <tbody>
+                            <tr>
+                                <th>Date*</th>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">FHS</a></td>
+                                <td>First High-School Education Group</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">GTPB</a></td>
+                                <td>Gores Technology Partners II</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">GTPA</a></td>
+                                <td>Gores Technology Partners</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">SPKB</a></td>
+                                <td>Silver Spike Acquisition II</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">ATSP</a></td>
+                                <td>Archimedes Tech SPAC</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">GAPA</a></td>
+                                <td>G&amp;P Acquisition</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">CPNG</a></td>
+                                <td>Coupang</td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11</td>
+                                <td><a href="#">SCAQ</a></td>
+                                <td>Stratim Cloud Acquisition</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+<div class="global-loader-container active" *ngIf="globalService.loaderState">
+    <div class="loader"></div>
+</div>

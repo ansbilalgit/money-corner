@@ -1,0 +1,125 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" #navbarToggler data-toggle="collapse"
+        data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" routerLink="/search">
+        <img src="./assets/images/logo.png" width="250" alt="Money Corner Technologies"
+          title="Money Corner Technologies">
+      </a>
+      <div class="menu-search-sm">
+        <div class="menu-search">
+          <i class="fa fa-search" *ngIf="globalService.allStocksData.length != 0"></i>
+          <i class="fa fa-refresh animate-rotate" *ngIf="globalService.allStocksData.length == 0"></i>
+          <input type="text" [value]="strVal" (input)="initSerach($event.target.value)"
+            [placeholder]="globalService.allStocksData.length == 0 ? 'Loading..' : 'Search...'">
+          <div class="full-width no-padding menu-search-results text-left"
+            *ngIf="strVal !=='' && searchData.length > 0 && searchFocused">
+            <div *ngFor="let item of searchData" routerLink="/stock/{{item.symbol}}">
+              {{item.name}}</div>
+          </div>
+          <div class="full-width no-padding menu-search-results text-left"
+            *ngIf="strVal !=='' && searchData.length == 0 && searchFocused">
+            <div>0 Results found!!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="menu-search hidden-xs">
+          <i class="fa fa-search" *ngIf="globalService.allStocksData.length != 0"></i>
+          <i class="fa fa-refresh animate-rotate" *ngIf="globalService.allStocksData.length == 0"></i>
+          <input type="text" [value]="strVal" (input)="initSerach($event.target.value)"
+            [placeholder]="globalService.allStocksData.length == 0 ? 'Loading..' : 'Search...'">
+          <div class="full-width no-padding menu-search-results text-left"
+            *ngIf="strVal !=='' && searchData.length > 0 && searchFocused">
+            <div *ngFor="let item of searchData" routerLink="/stock/{{item.symbol}}">
+              {{item.name}}</div>
+          </div>
+          <div class="full-width no-padding menu-search-results text-left"
+            *ngIf="strVal !=='' && searchData.length == 0 && searchFocused">
+            <div>0 Results found!!</div>
+          </div>
+        </li>
+        <li>
+          <span routerLink="/search"
+            [ngClass]="{'active': globalService.currRoute == 'search' || globalService.currRoute == 'stock'}"
+            class="normal">MARKETS</span>
+        </li>
+        <li>
+          <span routerLink="/compare" [ngClass]="{'active': globalService.currRoute == 'compare'}"
+            class="normal">COMPARE</span>
+        </li>
+        <li>
+          <span routerLink="/calendar" [ngClass]="{'active': globalService.currRoute == 'calendar'}"
+            class="normal">CALENDAR</span>
+        </li>
+        <!-- <li>
+          <span routerLink="/screener" [ngClass]="{'active': globalService.currRoute == 'screener'}" class="normal">STOCK SCREENS</span>
+        </li>
+        <li>
+          <span class="normal" [ngClass]="{'active': globalService.currRoute == 'new-stock'}" routerLink="/new-stock/AAPL">BLOG</span>
+        </li> -->
+        <li class="hidden-xs hidden-sm">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+        <li>
+          <span routerLink="/account" [ngClass]="{'active': globalService.currRoute == 'account'}" class="normal"
+            style="margin-right:22px;">ACCOUNT</span>
+        </li>
+        <!-- <li>
+          <span class="rounded bordered">SIGN UP</span>
+        </li> -->
+        <!-- <li>
+          <span routerLink="/screener" class="rounded fill">STOCK SCREENS</span>
+        </li> -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>
+
+<!-- Footer -->
+<footer class="footer-color">
+
+  <div class="copyrights text-center">
+    © 2020
+    <span class="theme-color">Findurstocks</span>. All rights reserved. <br>Market Data by FMP Real-Time Price.
+    All users should speak with their financial advisor before buying or selling any securities.
+    Users should not base their investment decision upon "findurstocks.com".
+    By using the site you agree and are held liable for your own investment decisions and
+    agree to Terms of Use and Privacy Policy. Please read the full disclaimer <a routerLink="/disclaimer"
+      class="theme-color">here</a>.
+    <app-contact-us></app-contact-us>
+  </div>
+</footer>
+<div class="fly-menu">
+  <div class="menu-link col-xs-3">
+    <a routerLink="/search">
+      <i class="icon-big fa fa-home"></i>
+      HOME
+    </a>
+  </div>
+  <div class="menu-link col-xs-3">
+    <a routerLink="/search">
+      <i class="icon-big fa fa-dashboard"></i>
+      MARKETS
+    </a>
+  </div>
+  <div class="menu-link col-xs-3">
+    <a routerLink="/compare">
+      <i class="icon-big fa fa-sign-in"></i>
+      COMPARE
+    </a>
+  </div>
+  <div class="menu-link col-xs-3">
+    <a routerLink="/account">
+      <i class="icon-big fa fa-user"></i>
+      LOGIN
+    </a>
+  </div>
+</div>

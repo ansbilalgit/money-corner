@@ -1,0 +1,310 @@
+<div class="container-fluid lt-white" id="view-port-container">
+    <div class="container">
+        <!-- <div class="row" *ngIf="globalService.currUser.isUserVerified">
+            <div class="col-md-3 hide-xs"></div>
+            <div class="col-md-6 hide-xs">
+                <div class="card-container">
+                    <h2 class="heading p-bot-20 text-center">Welcome {{globalService.currUser.name}}</h2>
+                    <div class="col-xs-12 text-center" style="padding: 10px">
+                        ----------------------- Profile -----------------------
+                    </div>
+                    <div class="form-group" *ngIf="globalService.currUser.photoUrl != ''">
+                        <div class="col-xs-12 text-center">
+                            <img class="card-center-hori width-100 img-responsive img-circle p-bot-10"
+                                src="{{ globalService.currUser.photoUrl }}">
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="globalService.currUser.name != ''">
+                        <div class="col-xs-4 text-right">Name: </div>
+                        <div class="col-xs-8 p-bot-10">{{globalService.currUser.name}}&nbsp;</div>
+                    </div>
+                    <div class="form-group" *ngIf="globalService.currUser.email != ''">
+                        <div class="col-xs-4 text-right">Email Id </div>
+                        <div class="col-xs-8 p-bot-10">{{globalService.currUser.email}}&nbsp;</div>
+                    </div>
+                    <div class="form-group" *ngIf="globalService.currUser.mobile != ''">
+                        <div class="col-xs-4 text-right">Mobile: </div>
+                        <div class="col-xs-8 p-bot-10">{{globalService.currUser.mobile}}&nbsp;</div>
+                    </div>
+                    <div class="form-group" *ngIf="globalService.currUser.createdon != ''">
+                        <div class="col-xs-4 text-right">Registered On: </div>
+                        <div class="col-xs-8 p-bot-10">{{globalService.currUser.createdon}}&nbsp;</div>
+                    </div>
+                    <div class="col-xs-12 text-center" style="padding: 10px">
+                        ----------------------------------------------------
+                    </div>
+                    <div class="p-bot-20 text-center">
+                        <button type="button" (click)="logout()" class="btn rounded-btn m-top-10 m-bot-30">Sign
+                            Out</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 hide-xs"></div>
+        </div> -->
+
+        <div class="row" *ngIf="globalService.currUser.isUserVerified">
+            <div class="col-md-12 hide-xs">
+                <div class="row">
+                    <div class="col-xs-8">
+                        <h2 class="heading">Welcome {{globalService.currUser.name}}</h2>
+                    </div>
+                    <div class="col-xs-4">
+                        <button type="button" (click)="logout()"
+                            class="btn rounded-btn m-top-10 m-bot-30 pull-right">Sign
+                            Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!globalService.currUser.isUserVerified">
+            <div class="col-md-4 hide-xs"></div>
+            <div class="col-md-4 col-xs-12">
+                <div class="card-container">
+                    <app-login></app-login>
+                </div>
+            </div>
+            <div class="col-md-4 hide-xs"></div>
+        </div>
+
+        <div class="row" *ngIf="globalService.currUser.isUserVerified">
+            <div class="col-xs-12" style="margin-top: 20px;">
+                <owl-carousel-o [options]="customOptions" *ngIf="carouselState">
+                    <ng-container *ngFor="let data of GlobalIndexData">
+                        <ng-template carouselSlide>
+                            <div class="carousel-card bg-white">
+                                <div *ngIf="isPossitive(data.changesPercentage)" class="pull-left status green">
+                                    <i class="fa fa-arrow-up"></i>
+                                </div>
+                                <div *ngIf="!isPossitive(data.changesPercentage)" class="pull-left status red">
+                                    <i class="fa fa-arrow-down"></i>
+                                </div>
+                                <div class="pull-right info">
+                                    <div class="text-ellipsis" [title]="data.name">{{data.name}}</div>
+                                    <div class="price-info">
+                                        <span class="pull-left price">${{data.price}}</span>
+                                        <span class="pull-right positive"
+                                            *ngIf="isPossitive(data.changesPercentage)">+{{trimMe(data.changesPercentage)}}</span>
+                                        <span class="pull-right negative"
+                                            *ngIf="!isPossitive(data.changesPercentage)">{{trimMe(data.changesPercentage)}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </owl-carousel-o>
+                <div class="text-center" *ngIf="!carouselState">
+                    <div class="content-loader"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 no-padding">
+                                <div class="cust-card bg-white" style="min-height: 306px;">
+                                    <div class="head">
+                                        <i class="fa fa-bullhorn" aria-hidden="true"></i>
+                                        <span>Anouncements</span>
+                                    </div>
+                                    <div class="content" *ngIf="pressReleases.length == 0">
+                                        <div class="text-center"
+                                            style="width: 100px; height: 100px; border-radius: 50px; background-color: #000fe7; margin: 0 auto;">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"
+                                                style="font-size: 58px; color: white; padding-top: 18px;"></i>
+                                        </div>
+                                        <h3 class="text-center">No Recent Press Release!</h3>
+                                        No Recent Anouncements, Will show here once it got updated. with latest
+                                        Releases.
+                                    </div>
+                                    <div class="content" *ngIf="pressReleases.length > 0">
+                                        <div class="text-center" style="width: 50px; height: 50px; margin: 0 auto;">
+                                            <i class="fa fa-newspaper-o" aria-hidden="true"
+                                                style="font-size: 37px; padding-top: 9px;"></i>
+                                        </div>
+                                        <div class="announcements-text">
+                                            <div *ngFor="let rel of pressReleases">
+                                                <div class="p-10"><b>{{rel.title}}</b></div>
+                                                <!-- <p style="text-transform: lowercase;">{{rel.text}}</p> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 no-padding">
+                                <div class="cust-card bg-white" style="min-height: 306px;">
+                                    <div class="head">
+                                        <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                        <span>Portfolio</span>
+                                    </div>
+                                    <div class="content" *ngIf="globalService.portfolios.length == 0">
+                                        <div class="text-center"
+                                            style="width: 100px; height: 100px; border-radius: 50px; background-color: #000fe7; margin: 0 auto;">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"
+                                                style="font-size: 58px; color: white; padding-top: 18px;"></i>
+                                        </div>
+                                        <h3 class="text-center">You haven't added portfolio!</h3>
+                                        You haven't added any stock to portfolios yet, Please use 'Add to Portfolio'
+                                        button to
+                                        showcase
+                                        here.
+                                        All portfolios will be shown here under this block.
+                                    </div>
+                                    <div class="content" *ngIf="allPortfoliosState">
+                                        <div *ngIf="globalService.portfolios.length > 0 && allCallsLoaded">
+                                            <table class="table table-bordered no-margin">
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Symbol</th>
+                                                        <th>Name</th>
+                                                        <th>Change</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                    <tr *ngFor="let portfolio of globalService.portfolios"
+                                                        class="ng-star-inserted">
+                                                        <td class="glblue"><a
+                                                                href="#/stock/{{portfolio.symbol}}">{{portfolio.symbol}}</a>
+                                                        </td>
+                                                        <td [title]="portfolio.symbol"><span
+                                                                class="width-90 text-ellipsis">{{portfolio.name}}</span>
+                                                        </td>
+                                                        <!-- <td>{{generatePrice(portfolio.price, prices[portfolio.symbol])}}</td> -->
+                                                        <td>
+                                                            <span class="light-green"
+                                                                *ngIf="isPossitive(generatePrice(portfolio.price, prices[portfolio.symbol]))">
+                                                                +{{generatePrice(portfolio.price,
+                                                                prices[portfolio.symbol])}}%</span>
+                                                            <span class="light-red"
+                                                                *ngIf="!isPossitive(generatePrice(portfolio.price, prices[portfolio.symbol]))">
+                                                                {{generatePrice(portfolio.price,
+                                                                prices[portfolio.symbol])}}%</span>
+                                                        </td>
+                                                        <td>{{getDateFromNum(portfolio.date)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="content text-center" *ngIf="!allPortfoliosState">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 no-padding top-movers">
+                                <div class="cust-card bg-white" style="min-height: 306px;">
+                                    <div class="head">
+                                        <i class="fa fa-line-chart" aria-hidden="true"></i>
+                                        <span>Top Movers</span>
+                                    </div>
+                                    <div>
+                                        <div class="col-xs-6 no-padding">
+                                            <div *ngIf="topGainersState">
+                                                <div class="col-xs-12 no-padding top-movers-box"
+                                                    *ngFor="let gainers of topGainers |  slice:0:4">
+                                                    <div class="col-xs-5 no-padding text-center"
+                                                        routerLink="/stock/{{gainers.ticker}}">
+                                                        <span class="ticker green">{{gainers.ticker}}</span>
+                                                    </div>
+                                                    <div class="col-xs-7 no-padding"
+                                                        routerLink="/stock/{{gainers.ticker}}">
+                                                        <div class="name" [title]="gainers.companyName">
+                                                            {{gainers.companyName}}
+                                                        </div>
+                                                        <div class="value"><span
+                                                                class="currency">$</span>{{gainers.price}}
+                                                        </div>
+                                                        <div class="positive">{{gainers.changesPercentage}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="p-10" *ngIf="!topGainersState">
+                                                <div class="content-loader"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 no-padding">
+                                            <div *ngIf="topLosersState">
+                                                <div class="col-xs-12 no-padding top-movers-box"
+                                                    *ngFor="let losers of topLosers |  slice:0:4">
+                                                    <div class="col-xs-5 no-padding text-center"
+                                                        routerLink="/stock/{{losers.ticker}}">
+                                                        <span class="ticker red">{{losers.ticker}}</span>
+                                                    </div>
+                                                    <div class="col-xs-7 no-padding"
+                                                        routerLink="/stock/{{losers.ticker}}">
+                                                        <div class="name" [title]="losers.companyName">
+                                                            {{losers.companyName}}
+                                                        </div>
+                                                        <div class="value"><span
+                                                                class="currency">$</span>{{losers.price}}</div>
+                                                        <div class="negative">{{losers.changesPercentage}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="p-10" *ngIf="!topLosersState">
+                                                <div class="content-loader"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 no-padding">
+                <div class="cust-card bg-white" style="min-height: 306px;">
+                    <div class="head">
+                        <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                        <span>Activity</span>
+                    </div>
+                    <div class="content" *ngIf="activitiesList.length == 0">
+                        <div class="text-center"
+                            style="width: 100px; height: 100px; border-radius: 50px; background-color: #000fe7; margin: 0 auto;">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"
+                                style="font-size: 58px; color: white; padding-top: 18px;"></i>
+                        </div>
+                        <h3 class="text-center">You haven't visited any stocks!</h3>
+                        You haven't visit any stocks yet, Please use search option and visit the stock to showcase here.
+                        All activities will be shown here under this block.
+                    </div>
+                    <div class="content" *ngIf="activitiesList.length > 0">
+                        <table class="table table-bordered no-margin">
+                            <tbody>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Name</th>
+                                </tr>
+                                <tr *ngFor="let activity of activitiesList" class="ng-star-inserted">
+                                    <td><a href="#/stock/{{activity.symbol}}">{{activity.symbol}}</a></td>
+                                    <td [title]="activity.name"><span>{{activity.name}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- <div class="container-fluid bg-white">
+    <div class="container">
+        <div class="row search p-top-20">
+            <div class="col-sm-12 no-padding">
+                <div class="col-sm-12 st-table">
+                    <div class="p-top-10">
+                        <h2>Top Gainers</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="global-loader-container active" *ngIf="globalService.loaderState">
+    <div class="loader"></div>
+</div>

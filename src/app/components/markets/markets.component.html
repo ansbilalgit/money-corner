@@ -1,0 +1,1147 @@
+<div class="container-fluid lt-white" #home [ngClass]="{'dark': themeMode}">
+    <div class="container" id="view-port-container">
+        <!-- <div class="switch-holder text-right"> Light
+            <label class="switch">
+                <input type="checkbox" [checked]="themeMode" (change)="themeMode = !themeMode">
+                <span class="slider round"></span>
+            </label> Dark
+        </div> -->
+        <div class="nav-toggle-arrow hidden-sm hidden-xs" [ngClass]="{'active': sideNavToggle}"
+            (click)="sideNavToggle = !sideNavToggle">
+            <i class="fa fa-chevron-left" *ngIf="sideNavToggle"></i>
+            <i class="fa fa-chevron-right" *ngIf="!sideNavToggle"></i>
+        </div>
+        <ul class="scroll-menu hidden-sm hidden-xs" [ngClass]="{'active': sideNavToggle}">
+            <li (click)="scroll(home)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-dashboard" aria-hidden="true"></i>
+                        </td>
+                        <td> Overview</td>
+                    </tr>
+                </table>
+            </li>
+            <li *ngIf="allHistoRespCompleted === 5" (click)="scroll(profitability)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-money" aria-hidden="true"></i>
+                        </td>
+                        <td> Profitability</td>
+                    </tr>
+                </table>
+            </li>
+            <li (click)="scroll(ratios)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-percent" aria-hidden="true"></i>
+                        </td>
+                        <td> Ratios</td>
+                    </tr>
+                </table>
+            </li>
+            <li (click)="scroll(growth)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-line-chart" aria-hidden="true"></i>
+                        </td>
+                        <td> Growth</td>
+                    </tr>
+                </table>
+            </li>
+            <li (click)="scroll(summary)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                        </td>
+                        <td> Summary</td>
+                    </tr>
+                </table>
+            </li>
+            <li (click)="scroll(peers)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                        </td>
+                        <td> Peers</td>
+                    </tr>
+                </table>
+            </li>
+            <li (click)="scroll(secfilings)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                        </td>
+                        <td> SecFilings</td>
+                    </tr>
+                </table>
+            </li>
+            <!-- <li (click)="scroll(reports)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-file" aria-hidden="true"></i>
+                        </td>
+                        <td> Reports</td>
+                    </tr>
+                </table>
+            </li> -->
+            <li *ngIf="stockNews.length > 0" (click)="scroll(news)">
+                <table>
+                    <tr>
+                        <td>
+                            <i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                        </td>
+                        <td> News</td>
+                    </tr>
+                </table>
+            </li>
+        </ul>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <div class="row">
+                                <div class="col-xs-9">
+                                    <h3 class="heading p-bot-10 pull-left">{{profileInfo.companyName}} -
+                                        {{profileInfo.symbol}}</h3>
+                                </div>
+                                <div class="col-xs-3" *ngIf="profileState">
+                                    <img src="{{profileInfo.image}}" onerror="this.style.display = 'none'" class="stock-logo pull-right">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 mar-cap p-bot-10">
+                                    MARKET CAP : {{marketCap}}
+                                </div>
+                                <div class="col-xs-6 text-right p-bot-10">
+                                    <span class="pe-val">Currency: {{profileInfo.currency}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <span class="sector">SECTOR : <strong>{{profileInfo.sector}}</strong></span>
+                                </div>
+                                <div class="col-xs-6 text-right price">
+                                    <button class="add-portfolio-btn" (click)="addPortfolio()" style="margin-right: 10px;"
+                                        *ngIf="profileBtnState && globalService.currUser.isUserVerified">+ Add to
+                                        Portfolio</button>
+                                    <span>{{profileInfo.price}} </span> <span style="color:#cccccc;">|</span>
+                                    <span style="color: #000;" title="Change"> {{trimMe(profileInfo.changes)}}</span>
+                                    <span style="color: green;" title="Change" *ngIf="isPossitive(profileInfo.changes)">
+                                        <i class="fa fa-angle-double-up"></i></span>
+                                    <span style="color: red;" title="Change" *ngIf="!isPossitive(profileInfo.changes)">
+                                        <i class="fa fa-angle-double-down"></i></span>
+                                    <span style="color: red;" title="Percentage"
+                                        *ngIf="!isPossitive(profileInfo.percentage)"> {{trimMe(profileInfo.percentage)}}%</span>
+                                    <span style="color: green;" title="Percentage"
+                                        *ngIf="isPossitive(profileInfo.percentage)"> +{{trimMe(profileInfo.percentage)}}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="profileInfo && profileInfo.description.length > 0">
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <div class="row">
+                                <div class="col-xs-12 about scroll-container-y">
+                                    <h3 class="heading p-bot-10">About</h3>
+                                    {{profileInfo.description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row rating">
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="heading p-bot-10"><span class="badge pull-right blue"
+                                            *ngIf="ratingValue !== 0">{{ratingInfo.rating}}</span> Rating
+                                    </h3>
+                                    <div class=" p-bot-10" *ngIf="ratingValue !== 0">
+                                        <span>Recommendation <span
+                                                class="badge green">{{ratingInfo.ratingRecommendation}}</span></span>
+                                    </div>
+
+
+                                    <table class="full-block" *ngIf="ratingInfoState">
+                                        <tr>
+                                            <td>
+                                                <div class="pull-left width-100">DCF Score</div>
+                                                <span class="pull-left">
+                                                    <i class="fa fa-star active" aria-hidden="true"
+                                                        *ngFor="let i of getNum(ratingInfo.ratingDetailsDCFScore)"></i>
+                                                    <i class="fa fa-star inActive" aria-hidden="true"
+                                                        *ngFor="let i of getNum(5 - ratingInfo.ratingDetailsDCFScore)"></i>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="pull-left width-100">ROE Score</div>
+                                                <span class="pull-left">
+                                                    <i class="fa fa-star active" aria-hidden="true"
+                                                        *ngFor="let i of getNum(ratingInfo.ratingDetailsROEScore)"></i>
+                                                    <i class="fa fa-star inActive" aria-hidden="true"
+                                                        *ngFor="let i of getNum(5 - ratingInfo.ratingDetailsROEScore)"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="pull-left width-100">ROA Score</div>
+                                                <span class="pull-left">
+                                                    <i class="fa fa-star active" aria-hidden="true"
+                                                        *ngFor="let i of getNum(ratingInfo.ratingDetailsROAScore)"></i>
+                                                    <i class="fa fa-star inActive" aria-hidden="true"
+                                                        *ngFor="let i of getNum(5 - ratingInfo.ratingDetailsROAScore)"></i>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="pull-left width-100">DE Score</div>
+                                                <span class="pull-left">
+                                                    <i class="fa fa-star active" aria-hidden="true"
+                                                        *ngFor="let i of getNum(ratingInfo.ratingDetailsDEScore)"></i>
+                                                    <i class="fa fa-star inActive" aria-hidden="true"
+                                                        *ngFor="let i of getNum(5 - ratingInfo.ratingDetailsDEScore)"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="pull-left width-100">PE Score</div>
+                                                <span class="pull-left">
+                                                    <i class="fa fa-star active" aria-hidden="true"
+                                                        *ngFor="let i of getNum(ratingInfo.ratingDetailsPEScore)"></i>
+                                                    <i class="fa fa-star inActive" aria-hidden="true"
+                                                        *ngFor="let i of getNum(5 - ratingInfo.ratingDetailsPEScore)"></i>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="pull-left width-100">PB Score</div>
+                                                <span class="pull-left">
+                                                    <i class="fa fa-star active" aria-hidden="true"
+                                                        *ngFor="let i of getNum(ratingInfo.ratingDetailsPBScore)"></i>
+                                                    <i class="fa fa-star inActive" aria-hidden="true"
+                                                        *ngFor="let i of getNum(5 - ratingInfo.ratingDetailsPBScore)"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div *ngIf="!ratingInfoState">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 similar-stocks">
+                        <h4 class="small-sub-head">Similar Stocks</h4>
+                        <div *ngIf="stocks.length > 0 && similarStocksState">
+                            <a class="btn btn-sm btn-rounded btn-lightgreen txt-sm mb-2" href="#/stock/{{stock.symbol}}"
+                                *ngFor="let stock of stocks">{{stock.companyName}}</a>
+                        </div>
+                        <div *ngIf="!similarStocksState">
+                            <div class="content-loader"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 ignore-me">
+                        <div class="card-container-no">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <h3 class="heading">Revenue</h3>
+                                </div>
+                                <div class="col-xs-5">
+                                    <h3 class="heading">
+                                        ${{revenueCurrent.value}}{{revenueCurrent.curDetect}}</h3>
+                                </div>
+                            </div>
+                            <div *ngIf="revenueLineChartState" class="chart-container border-radius-10">
+                                <app-simple-line-chart [data]="revenueChartData" [elementId]="'revenue-line-chart'">
+                                </app-simple-line-chart>
+                                <i class="has-tooltip fa fa-info-circle fa-lg p-lb-10" aria-hidden="true"><span class="iamtooltip">Revenue</span></i>
+                            </div>
+                            <div *ngIf="!revenueLineChartState">
+                                <div class="content-loader"></div>
+                            </div>
+                            <!-- <canvas height="80" width="400" baseChart *ngIf="showRevenueEpsChart"
+                                [datasets]="revenueLineChartData" [labels]="lineChartLabels"
+                                [options]="lineChartOptions" [colors]="lineChartColors" [chartType]="lineChartType">
+                            </canvas> -->
+                        </div>
+                    </div>
+                    <div class="col-md-6 ignore-me">
+                        <div class="card-container-no">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <h3 class="heading">EPS</h3>
+                                </div>
+                                <div class="col-xs-5">
+                                    <h3 class="heading">{{epsCurrent}}</h3>
+                                </div>
+                            </div>
+                            <div *ngIf="revenueLineChartState" class="chart-container border-radius-10">
+                                <app-simple-line-chart [data]="epsChartData" [elementId]="'eps-line-chart'">
+                                </app-simple-line-chart>
+                                <i class="has-tooltip fa fa-info-circle fa-lg p-lb-10" aria-hidden="true"><span class="iamtooltip">Earnings per share (EPS) is calculated as a company's profit divided by the outstanding shares of its common stock. The resulting number serves as an indicator of a company's profitability.</span></i>
+                            </div>
+                            <div *ngIf="!revenueLineChartState">
+                                <div class="content-loader"></div>
+                            </div>
+                            <!-- <canvas height="80" width="400" baseChart *ngIf="showRevenueEpsChart"
+                                [datasets]="epsLineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+                                [colors]="lineChartColors" [chartType]="lineChartType">
+                            </canvas> -->
+                        </div>
+                    </div>
+                    <div class="col-md-6 ignore-me">
+                        <div class="card-container-no">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <h3 class="heading">Dividend Yield</h3>
+                                </div>
+                                <div class="col-xs-5">
+                                    <h3 class="heading"
+                                        *ngIf="dYieldLineChartState && dividendYieldChartData.length>=6">
+                                        {{dividendYieldChartData[5].value}}%</h3>
+                                </div>
+                            </div>
+                            <div *ngIf="dYieldLineChartState" class="chart-container border-radius-10">
+                                <app-simple-line-chart [data]="dividendYieldChartData"
+                                    [elementId]="'dyield-line-chart'">
+                                </app-simple-line-chart>
+                                <i class="has-tooltip fa fa-info-circle fa-lg p-lb-10" aria-hidden="true"><span class="iamtooltip">Income investors value a dividend-paying stock, while growth investors have little interest in dividends, preferring to capture large capital gains. Whatever your investing style, it is a matter of historical record that dividend-paying stocks have performed better than non-paying-dividend stocks over the long term.</span></i>
+                            </div>
+                            <div *ngIf="!dYieldLineChartState">
+                                <div class="content-loader"></div>
+                            </div>
+                            <!-- <canvas height="80" width="400" baseChart *ngIf="showDividendChart"
+                                [datasets]="dividentLineChartData" [labels]="lineChartLabels"
+                                [options]="dividendLineChartOptions" [colors]="lineChartColors"
+                                [chartType]="lineChartType">
+                            </canvas> -->
+                        </div>
+                    </div>
+                    <div class="col-md-6 ignore-me">
+                        <div class="card-container-no">
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <h3 class="heading">PE Ratio</h3>
+                                </div>
+                                <div class="col-xs-5">
+                                    <h3 class="heading" *ngIf="dYieldLineChartState && peRatioYieldChartData.length>=6">
+                                        {{peRatioYieldChartData[5].value}}%
+                                    </h3>
+                                </div>
+                            </div>
+                            <div *ngIf="dYieldLineChartState" class="chart-container border-radius-10">
+                                <app-simple-line-chart [data]="peRatioYieldChartData"
+                                    [elementId]="'peration-line-chart'">
+                                </app-simple-line-chart>
+                                <i class="has-tooltip fa fa-info-circle fa-lg p-lb-10" aria-hidden="true"><span class="iamtooltip">The financial reporting of both companies and investment research services use a basic earnings per share (EPS) figure divided into the current stock price to calculate the P/E multiple (i.e. how many times a stock is trading (its price) per each dollar of EPS).</span></i>
+                            </div>
+                            <div *ngIf="!dYieldLineChartState">
+                                <div class="content-loader"></div>
+                            </div>
+                            <!-- <canvas height="80" width="400" baseChart *ngIf="showBookValueChart"
+                                [datasets]="bookValueLineChartData" [labels]="lineChartLabels"
+                                [options]="lineChartOptions" [colors]="lineChartColors" [chartType]="lineChartType">
+                            </canvas> -->
+                        </div>
+                    </div>
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <h3 class="heading p-bot-20">Price Chart</h3>
+                            <div id="priceChart" style="width: 100%; height: 500px">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container key-metrics">
+                            <h3 class="heading p-bot-20">Current Key Metrics - TTM</h3>
+                            <table class="table text-center table-striped full-block">
+                                <thead>
+                                    <tr class="heading-td">
+                                        <th>PARTICULAR</th>
+                                        <th>VALUES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Market Cap</td>
+                                        <td>{{keyMetrics.marketCap}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>EPS <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Earnings per share (EPS) is calculated as a company's profit divided by the outstanding shares of its common stock. The resulting number serves as an indicator of a company's profitability.</span></i></td>
+                                        <td>{{keyMetrics.ePS}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Price To Book Value <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">The price-to-book value ratio, expressed as a multiple (i.e. how many times a company's stock is trading per share compared to the company's book value per share), is an indication of how much shareholders are paying for the net assets of a company.</span></i></td>
+                                        <td>{{keyMetrics.priceToBookValue}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PE Ratio <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">The financial reporting of both companies and investment research services use a basic earnings per share (EPS) figure divided into the current stock price to calculate the P/E multiple (i.e. how many times a stock is trading (its price) per each dollar of EPS).</span></i></td>
+                                        <td>{{keyMetrics.pERatio}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dividend Yield <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Income investors value a dividend-paying stock, while growth investors have little interest in dividends, preferring to capture large capital gains. Whatever your investing style, it is a matter of historical record that dividend-paying stocks have performed better than non-paying-dividend stocks over the long term.</span></i></td>
+                                        <td>{{keyMetrics.dividendYield}}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ROE <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">ROE this ratio calculates how much money is made based on the investors' investment in the company.investors want to see a high return on equity ratio because this indicates that the company is using its investors' funds effectively.</span></i></td>
+                                        <td>{{keyMetrics.rOE}}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ROCE <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">ROCE shows investors how many dollars in profits each dollar of capital employed generates.</span></i></td>
+                                        <td>{{keyMetrics.rOCE}}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>EnterpriseValue <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Overall, this measurement allows investors to assess a company on the same basis as that of an acquirer. As a rough calculation, enterprise value multiple serves as a proxy for how long it would take for an acquisition to earn enough to pay off its costs in years(assuming no change in EBITDA).</span></i></td>
+                                        <td>{{keyMetrics.enterpriseValue}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sector PE</td>
+                                        <td>{{keyMetrics.sectorPE}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>EV to EBITDA <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">EBITperRevenue.</span></i></td>
+                                        <td>{{keyMetrics.eVtoEBITDA}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Outstanding Shares</td>
+                                        <td>{{keyMetrics.outstandingShares}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Book Value <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip"></span></i></td>
+                                        <td>{{keyMetrics.bookValue}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Website</td>
+                                        <td><a href="{{keyMetrics.website}}" target="_blank">{{keyMetrics.website}}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>52 Week High</td>
+                                        <td>{{keyMetrics.val52WeekHigh}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>52 Week Low</td>
+                                        <td>{{keyMetrics.val52WeekLow}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fair value <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Helps investors determine whether a stock is trading at, below, or above its fair value estimate,A price/fair value ratio below 1 suggests the stock is trading at a discount to its fair value, while a ratio above 1 suggests it is trading at a premium to its fair value.</span></i></td>
+                                        <td>{{keyMetrics.fairValue}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!---   <div class="row">
+                    <div class="col-md-12 ignore-me">
+                    <div class="tradingview-widget-container" style="height: 300px;" #containerDiv>
+                        <div class="tradingview-widget-container__widget"></div>
+                    </div>
+                    </div>
+                </div>
+            -->
+            </div>
+        </div>
+
+        <div class="row" #profitability>
+            <div class="col-md-12">
+                <div class="row m-top-20">
+                    <div class="col-md-12 ignore-me" *ngIf="allHistoRespCompleted === 5">
+                        <h2 class="heading big-sub-heading">Profitability</h2>
+                        <h4 class="heading p-bot-10 small-sub-head">Stock Returns</h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="p-10 single-card card-container width-400">
+                                    <table class="card-center-hori width-322">
+                                        <tr *ngFor="let stockReturn of stockReturns">
+                                            <td class="width-122 p-top-bot-5">{{stockReturn.name}}</td>
+                                            <td class="width-200 p-top-bot-5">
+                                                <div class="width-100 pull-left text-right">
+                                                    <div class="width-100 pull-right"
+                                                        *ngIf="!isPossitive(stockReturn.value)">
+                                                        <div class="pull-right bg-red"
+                                                            [ngStyle]="{'width.px': getValueForPixels(stockReturn.value)}">
+                                                            &nbsp;</div>
+                                                    </div>
+                                                    <div class="width-100 pull-right p-left-right-5"
+                                                        *ngIf="isPossitive(stockReturn.value)">{{stockReturn.value}}%
+                                                    </div>
+                                                </div>
+                                                <div class="width-100 pull-right text-left">
+                                                    <div class="width-100 pull-left"
+                                                        *ngIf="isPossitive(stockReturn.value)">
+                                                        <div class="pull-left bg-green"
+                                                            [ngStyle]="{'width.px': getValueForPixels(stockReturn.value)}">
+                                                            &nbsp;</div>
+                                                    </div>
+                                                    <div class="width-100 pull-left p-left-right-5"
+                                                        *ngIf="!isPossitive(stockReturn.value)">{{stockReturn.value}}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 m-top-20" #ratios>
+                        <div class="row">
+                            <div class="col-md-12 ignore-me">
+                                <div class="chart-container border-radius-10">
+                                    <h4 class="heading p-top-20 p-left-20">ROE, ROCE, ROA and Net Profit Margin</h4>
+                                    <div class="scroll-container">
+                                        <div class="pie-bar-container" *ngIf="showReturnNetChart">
+                                            <app-pie-bar-chart [textId]="roaceTooltip" [data]="roaceChartData"
+                                                [elementId]="'roace-combo-chart'">
+                                            </app-pie-bar-chart>
+                                        </div>
+                                        <div *ngIf="!showReturnNetChart">
+                                            <div class="content-loader"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-3 ignore-me flex-col">
+                                <div class="card-container">
+                                    <h4 class="heading p-bot-20">ROE</h4>
+                                    <canvas height="180" width="400" baseChart *ngIf="showReturnNetChart"
+                                        [datasets]="returnNetROEChartData" [labels]="returnNetChartLabels"
+                                        [options]="lineChartOptions" [colors]="returnNetChartColors"
+                                        [chartType]="returnNetChartType">
+                                    </canvas>
+                                    <h4 class="p-bot-20">Avg ROE (3 Yrs): {{avg3YrROE}}</h4>
+                                    <a data-toggle="tooltip" title="ROE shows how efficiently a company generates profit from the money that the
+                                    shareholders have invested. It is advisable to invest in companies with 3-Yr Avg ROE
+                                    greater than 15%."><i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3 ignore-me flex-col">
+                                <div class="card-container">
+                                    <h4 class="heading p-bot-20">ROCE</h4>
+
+                                    <canvas height="180" width="400" baseChart *ngIf="showReturnNetChart"
+                                        [datasets]="returnNetROCEChartData" [labels]="returnNetChartLabels"
+                                        [options]="lineChartOptions" [colors]="returnNetChartColors"
+                                        [chartType]="returnNetChartType">
+                                    </canvas>
+                                    <h4 class="p-bot-20">Avg ROCE (3 Yrs): {{avg3YrROCE}}</h4>
+
+                                    <a data-toggle="tooltip" title="
+                                    ROCE measures the company’s profit and efficiency in terms of the capital it
+                                    employes. A higher ROCE is better and it is favourable to invest in companies with
+                                    3-Yr Avg ROCE greater than 15%"><i class="has-tooltip fa fa-info-circle fa-lg"
+                                            aria-hidden="true"></i></a>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3 ignore-me flex-col">
+                                <div class="card-container">
+                                    <h4 class="heading p-bot-20">ROA</h4>
+                                    <canvas height="180" width="400" baseChart *ngIf="showReturnNetChart"
+                                        [datasets]="returnNetROAChartData" [labels]="returnNetChartLabels"
+                                        [options]="lineChartOptions" [colors]="returnNetChartColors"
+                                        [chartType]="returnNetChartType">
+                                    </canvas>
+                                    <h4 class="p-bot-20">Avg ROA (3 Yrs) : {{avg3YrROA}}</h4>
+
+                                    <a data-toggle="tooltip" title="ROA is an indicator of how profitable a company is relative to its total assets. It
+                                    can be calculated as: Net income/ Average total assets). A company with higher ROA
+                                    means it is more efficient in using its assets to generate earnings."><i
+                                            class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3 ignore-me flex-col">
+                                <div class="card-container">
+                                    <h4 class="heading p-bot-20">Net Profit Margin</h4>
+                                    <canvas height="180" width="400" baseChart *ngIf="showReturnNetChart"
+                                        [datasets]="returnNetNPMChartData" [labels]="returnNetChartLabels"
+                                        [options]="lineChartOptions" [colors]="returnNetChartColors"
+                                        [chartType]="returnNetChartType">
+                                    </canvas>
+                                    <h4 class="p-bot-20">Avg NPM (3 Yrs) : {{avg3YrNPM}}</h4>
+
+                                    <a data-toggle="tooltip" title="Profit margin reveals how good a company is at converting revenue into profits
+                                    available for shareholders. It can be calculated as: (Net profit/Revenue). A company
+                                    with an increasing profit (or least steady) margin is suitable for investment."><i
+                                            class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
+
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 ignore-me flex-col">
+                                <div class="card-container">
+                                    <h3 class="heading p-bot-20">Revenue, Net Profit, NPM</h3>
+                                    <div id="rnnChart" style="width: 100%; height: 500px">Loading...</div>
+                                    <div *ngIf="!showReturnNetChart">
+                                        <div class="content-loader"></div>
+                                    </div>
+
+                                    <a data-toggle="tooltip"><i class="has-tooltip fa fa-info-circle fa-lg"
+                                            aria-hidden="true"><span class="iamtooltip">Revenue is the total money collected or the company expects to collect from the sale of its products/services. Net profit is the difference between total revenue and total expenses. Ratio of Net profit by total Revenue gives the net profit margin (NPM). It is advisable to invest in companies with consistently growing revenue & profits for last mulitple years as it reflects profitability of the business.</span></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" #growth>
+            <div class="col-md-12">
+                <h2 class="heading big-sub-heading">Growth</h2>
+                <div class="row">
+                    <div class="col-md-7 ignore-me">
+                        <div class="card-container customized-table">
+                            <table class="text-center table-striped full-block" *ngIf="growthDataState">
+                                <thead>
+                                    <tr class="heading-td">
+                                        <th>Particular</th>
+                                        <th class="text-center">3 Yr CAGR</th>
+                                        <th class="text-center">5 Yr CAGR</th>
+                                        <th class="text-center">10 Yr CAGR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Revenue Growth</th>
+                                        <td>{{growthData.revenueGrowth.year3CAGR}}</td>
+                                        <td>{{growthData.revenueGrowth.year5CAGR}}</td>
+                                        <td>{{growthData.revenueGrowth.year10CAGR}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Net Income Growth</th>
+                                        <td>{{growthData.netProfitGrowth.year3CAGR}}</td>
+                                        <td>{{growthData.netProfitGrowth.year5CAGR}}</td>
+                                        <td>{{growthData.netProfitGrowth.year10CAGR}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Shareholders Equity Growth</th>
+                                        <td>{{growthData.shareholderGrowth.year3CAGR}}</td>
+                                        <td>{{growthData.shareholderGrowth.year5CAGR}}</td>
+                                        <td>{{growthData.shareholderGrowth.year10CAGR}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Dividend Growth</th>
+                                        <td>{{growthData.dividendGrowth.year3CAGR}}</td>
+                                        <td>{{growthData.dividendGrowth.year5CAGR}}</td>
+                                        <td>{{growthData.dividendGrowth.year10CAGR}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div *ngIf="!growthDataState">
+                                <div class="content-loader"></div>
+                            </div>
+                            <a data-toggle="tooltip">
+                                <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">While looking at the growth aspect of a company, always check consistency for last multiple years. A company can grow a very fast pace for an year. However, it's the consistent growth for last many year that matters more. Further, also compare the last year growth with historical growth rate.</span></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-5 ignore-me">
+                        <div class="card-container">
+                            <h4 class="heading p-bot-20">Dividends Yield Vs DPR</h4>
+                            <div id="dyDprChart" style="height: 304px"></div>
+                            <div *ngIf="!showReturnNetChart">
+                                <div class="content-loader"></div>
+                            </div>
+                            <p class="p-top-30">Avg Dividend Yield (3 Yrs): {{avgDividendYield}}
+                                <a data-toggle="tooltip">
+                                    <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">Dividend yield shows the amount of annual dividend per share as a percentage of its share price. As a thumb rule, a high avg dividend yield is favouable for dividend investors.</span></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="heading big-sub-heading">Leverage and Liquidity</h2>
+                <div class="row">
+                    <!-- <div class="col-md-12 ignore-me">
+                        <div *ngIf="showReturnNetChart" class="chart-container border-radius-10">
+                            <h4 class="heading p-top-20 p-left-20">Debt To Equity, Current Ratio, Interest Coverage
+                                Ratio and Quick Ratio</h4>
+                            <app-pie-line-chart [data]="leverageChartData" [elementId]="'leverage-combo-chart'">
+                            </app-pie-line-chart>
+                        </div>
+                    </div> -->
+                    <div class="col-md-3 ignore-me flex-col">
+                        <div class="chart-container">
+                            <h4 class="heading text-center p-top-20">Debt To Equity</h4>
+                            <div *ngIf="showReturnNetChart">
+                                <!-- <div id="debtToEquity"></div> -->
+                                <app-simple-line-chart [data]="debtToEquityChartData" [elementId]="'debtToEquity'">
+                                </app-simple-line-chart>
+                                <div class="add-padding">
+                                    Debt to Equity: {{debtToEquityValue}}<br><br>
+                                    <a data-toggle="tooltip">
+                                        <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">This is a measurement of the percentage of the company’s balance sheet that is financed by suppliers, lenders, creditors and obligors versus what the shareholders have committed.</span></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-center" *ngIf="!showReturnNetChart">
+                                <div class="content-loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 ignore-me flex-col">
+                        <div class="chart-container">
+                            <h4 class="heading text-center p-top-20">Current Ratio</h4>
+                            <div *ngIf="showReturnNetChart">
+                                <!-- <div id="currentRatio"></div> -->
+                                <app-simple-line-chart [data]="currentRatioChartData" [elementId]="'currentRatio'">
+                                </app-simple-line-chart>
+                                <div class="add-padding">
+                                    Current Ratio: {{currentRatioValue}}<br><br>
+                                    <a data-toggle="tooltip">
+                                        <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">A current ratio of 1.0 or greater is an indication that the company is well-positioned to cover its current or short-term liabilities.</span></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-center" *ngIf="!showReturnNetChart">
+                                <div class="content-loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 ignore-me flex-col">
+                        <div class="chart-container">
+                            <h4 class="heading text-center p-top-20">Interest Coverage Ratio</h4>
+                            <div *ngIf="showReturnNetChart">
+                                <!-- <div id="interestCoverageRatio"></div> -->
+                                <app-simple-line-chart [data]="iCoverageChartData"
+                                    [elementId]="'interestCoverageRatio'">
+                                </app-simple-line-chart>
+                                <div class="add-padding">
+                                    Int Coverage Ratio: {{iCoverageValue}}<br><br>
+                                    <a data-toggle="tooltip">
+                                        <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">The lower a company’s interest coverage ratio is, the more its debt expenses burden the company.</span></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-center" *ngIf="!showReturnNetChart">
+                                <div class="content-loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 ignore-me flex-col">
+                        <div class="chart-container">
+                            <h4 class="heading text-center p-top-20">Quick Ratio</h4>
+                            <div *ngIf="showReturnNetChart">
+                                <!-- <div id="quickRatio"></div> -->
+                                <app-simple-line-chart [data]="quickRatioChartData" [elementId]="'quickRatio'">
+                                </app-simple-line-chart>
+                                <div class="add-padding">
+                                    Quick Ratio: {{quickRatioValue}}<br><br>
+                                    <a data-toggle="tooltip">
+                                        <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"><span class="iamtooltip">The quick ratio is more conservative than the current ratio because it excludes inventory and other current assets, which generally are more difficult to turn into cash. A higher quick ratio means a more liquid current position.</span></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-center" *ngIf="!showReturnNetChart">
+                                <div class="content-loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="heading big-sub-heading">Valuation</h2>
+                <div class="row">
+                    <div class="col-md-12 ignore-me">
+                        <div class="chart-container border-radius-10">
+                            <div class="scroll-container" *ngIf="showReturnNetChart">
+                                <div class="pie-bar-container">
+                                    <app-pie-bar-chart [textId]="'valuationTooltip'" [data]="valuationChartData"
+                                        [elementId]="'valuation-combo-chart'">
+                                    </app-pie-bar-chart>
+                                </div>
+                            </div>
+                            <div *ngIf="!showReturnNetChart">
+                                <div class="content-loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-3 ignore-me flex-col">
+                        <div class="card-container">
+                            <h4 class="heading p-top-10">PE Ratio</h4>
+                            <div id="pERatio"></div>
+                            Avg PE (3 Yrs): {{avgPERatio}}<br><br>
+                            <a data-toggle="tooltip" title="It is calculated as: (Price per share/ Earnings per Share). As a thumb rule, a company
+                            with a lower PE ratio is undervalued compared to the companies with a higher PE ratio.
+                            The average PE ratio varies depending on the industry.">
+                                <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 ignore-me flex-col">
+                        <div class="card-container">
+                            <h4 class="heading p-top-10">EB / EBIDTA Ratio</h4>
+                            <div id="eBRatio"></div>
+                            EB/EBITDA (Avg 3Yr) : {{avgEBRatio}}<br><br>
+                            <a data-toggle="tooltip" title="The EB/EBITDA metric is a valuation tool that
+                            helps investors compare companies. EB calculates a company's total value, while EBITDA
+                            measures a company's overall financial profitability. Companies with lower EV/EBITDA
+                            value are undervalued.">
+                                <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 ignore-me flex-col">
+                        <div class="card-container">
+                            <h4 class="heading p-top-10">Price To Book Value</h4>
+                            <div id="priceToBookValue"></div>
+                            Price To Book Value (3 Yrs): {{avgPBV}}<br><br>
+                            <a data-toggle="tooltip" title="It is calculated as: (Price per share/ book
+                            value per share). As a thumb rule, a company with lower P/BV ratio is undervalued
+                            compared to the companies with higher P/BV ratio.">
+                                <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 ignore-me flex-col">
+                        <div class="card-container">
+                            <h4 class="heading p-top-10">Price To Cash Flow</h4>
+                            <div id="priceToCashFlow"></div>
+                            Price To CashFlow (Avg 3Yr) : {{avgPCF}}<br><br>
+                            <a data-toggle="tooltip" title="It measures the value of a stock's price
+                            relative to its operating cash flow per share. A low P/CF multiple indicates that a
+                            stock is undervalued. This ratio is considered better than PE as a company's cash flows
+                            cannot be as easily manipulated as its earnings.">
+                                <i class="has-tooltip fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row" #summary>
+            <div class="col-md-12">
+                <h2 class="heading big-sub-heading">Financial Summary</h2>
+                <div class="row">
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <h3 class="heading">Income Statement</h3>
+                            <div class="row st-table">
+                                <div id="fsIncomeStChart" class="col-sm-12 col-md-5"></div>
+                                <div class="col-sm-12 col-md-7">
+                                    <table class="col-sm-12" *ngIf="revenueLineChartState">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Period Ending:</th>
+                                                <th *ngFor="let date of getDatesFromData(fsIncomeStTableData)"
+                                                    class="text-right">{{date}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let keyValuePair of fsIncomeStTableKeys">
+                                                <td>{{keyValuePair.name}}</td>
+                                                <td *ngFor="let value of getValuesFromData(fsIncomeStTableData, keyValuePair.key)"
+                                                    class="text-right">{{value.value}}{{value.curDetect}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div *ngIf="!revenueLineChartState">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <h3 class="heading">Balance Sheet</h3>
+                            <div class="row st-table">
+                                <div id="fsBalanceStChart" class="col-sm-12 col-md-5"></div>
+                                <div class="col-sm-12 col-md-7">
+                                    <table class="col-sm-12" *ngIf="balSheetStState">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Period Ending:</th>
+                                                <th *ngFor="let date of getDatesFromData(fsBalanceStTableData)"
+                                                    class="text-right">{{date}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let keyValuePair of fsBalanceStTableKeys">
+                                                <td>{{keyValuePair.name}}</td>
+                                                <td *ngFor="let value of getValuesFromData(fsBalanceStTableData, keyValuePair.key)"
+                                                    class="text-right">{{value.value}}{{value.curDetect}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div *ngIf="!balSheetStState">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <h3 class="heading">Cash Flow Statement</h3>
+                            <div class="row st-table">
+                                <div id="fsCashStChart" class="col-sm-12 col-md-5"></div>
+                                <div class="col-sm-12 col-md-7">
+                                    <table class="col-sm-12" *ngIf="cashFlowStState">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Period Ending:</th>
+                                                <th *ngFor="let date of getDatesFromData(fsCashStTableData)"
+                                                    class="text-right">{{date}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let keyValuePair of fsCashStTableKeys">
+                                                <td>{{keyValuePair.name}}</td>
+                                                <td *ngFor="let value of getValuesFromData(fsCashStTableData, keyValuePair.key)"
+                                                    class="text-right">{{value.value}}{{value.curDetect}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div *ngIf="!cashFlowStState">
+                                        <div class="content-loader"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="accordion cust m-top-20"><span class="heading big-sub-heading m-0">Income
+                Statement</span></button>
+        <div class="panel st-table">
+            <div class="p-top-10 card-container flex-height scroll-container">
+                <table class="col-sm-12" *ngIf="pLElements.length > 0">
+                    <thead>
+                        <tr>
+                            <th>PARTICULAR</th>
+                            <th *ngFor="let data of pLElements[0]['data']" class="text-right">
+                                {{data.date}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let rec of pLElements">
+                            <td>{{rec.name}}</td>
+                            <td *ngFor="let data of rec.data" class="text-right">{{data.value}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion cust"><span class="heading big-sub-heading m-0">Balance Sheet</span></button>
+        <div class="panel st-table">
+            <div class="p-top-10 card-container flex-height scroll-container">
+                <table class="col-sm-12" *ngIf="balSheetElements.length > 0">
+                    <thead>
+                        <tr>
+                            <th>PARTICULAR</th>
+                            <th *ngFor="let data of balSheetElements[0]['data']" class="text-right">
+                                {{data.date}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let rec of balSheetElements">
+                            <td>{{rec.name}}</td>
+                            <td *ngFor="let data of rec.data" class="text-right">{{data.value}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion cust"><span class="heading big-sub-heading m-0">Cash Flow statement</span></button>
+        <div class="panel st-table">
+            <div class="p-top-10 card-container flex-height scroll-container">
+                <table class="col-sm-12" *ngIf="cashFlowElements.length > 0">
+                    <thead>
+                        <tr>
+                            <th>PARTICULAR</th>
+                            <th *ngFor="let data of cashFlowElements[0]['data']" class="text-right">
+                                {{data.date}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let rec of cashFlowElements">
+                            <td>{{rec.name}}</td>
+                            <td *ngFor="let data of rec.data" class="text-right">{{data.value}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row" #peers>
+            <div class="col-md-12">
+                <h2 class="heading big-sub-heading m-top-0">Peer Companies</h2>
+                <div class="row">
+                    <div class="col-md-12 ignore-me">
+                        <div class="card-container">
+                            <div class="row" *ngIf="similarStocksState">
+                                <div class="col-sm-12 st-table">
+                                    <table class="col-sm-12">
+                                        <thead>
+                                            <tr>
+                                                <th>COMPANY</th>
+                                                <th class="text-center">Price</th>
+                                                <!-- <th class="text-center">Revenue</th> -->
+                                                <th class="text-center">MCAP</th>
+                                                <!-- <th class="text-center">EPS</th> -->
+                                                <th class="text-center width-200">Last Annual Dividend</th>
+                                                <!-- <th class="text-center">PE Ratio</th> -->
+                                                <th class="text-center">Volume</th>
+                                                <!-- <th class="text-center">Sector</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let stock of stocks">
+                                                <td><a href="#/stock/{{stock.symbol}}">{{stock.companyName}}</a></td>
+                                                <td class="text-center">${{stock.price}}</td>
+                                                <!-- <td class="text-center">-</td> -->
+                                                <td class="text-center">
+                                                    {{globalService.numDifferentiation(stock.marketCap).value + '' +
+                                                    globalService.numDifferentiation(stock.marketCap).curDetect}}</td>
+                                                <!-- <td class="text-center">-</td> -->
+                                                <td class="text-center">{{(stock.lastAnnualDividend).toFixed(2)}}</td>
+                                                <!-- <td class="text-center">-</td> -->
+                                                <td class="text-center">{{stock.volume}}</td>
+                                                <!-- <td class="text-center">{{stock.sector}}</td> -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div *ngIf="!similarStocksState">
+                                <div class="content-loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="row annual-reports p-bot-20" #reports>
+            <div class="col-md-12">
+                <div class="row m-top-20">
+                    <div class="col-md-12 ignore-me">
+                        <h2 class="heading big-sub-heading p-bot-10">Annual Reports</h2>
+                        <div class="card-container">
+                            <div>
+                                <h3 class="heading p-bot-20">Get the latest Annualy Report here: <a
+                                        (click)="donloadAnnualReports()">2020, 2019, 2018</a></h3>
+                                Company's Annual Report is a document produced each year by all publicly-held
+                                companies
+                                that detail the financial condition of the company and includes the balance sheet,
+                                income statement, cash flow statement, shareholding pattern and other relevant
+                                information required by law. Most companies provide all relevant information and
+                                pictures of the activities of the company inside this document. An intelligent
+                                investor
+                                should definitely go through this document before marking their investment decision.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="row news p-bot-30" #news>
+            <div class="col-md-12" *ngIf="stockNews.length > 0">
+                <h2 class="heading big-sub-heading">Recent News</h2>
+                <div class="row" *ngIf="stockNewsState">
+                    <div class="col-md-6 col-sm-6 ignore-me" *ngFor="let news of stockNews">
+                        <div class="card-container">
+                            <h5 class="heading big-sub-heading p-bot-20"><a target="_blank"
+                                    [href]="news.url">{{news.title}}</a></h5>
+                            {{news.text}}
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!stockNewsState">
+                    <div class="content-loader"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row sec-filing p-bot-30" #secfilings>
+            <div class="col-md-12" *ngIf="secFilings.length > 0">
+                <h2 class="heading big-sub-heading">Sec Filings</h2>
+                <div class="row" *ngIf="secFilingsState">
+                    <div class="col-md-3 col-sm-6 ignore-me" *ngFor="let secFiling of secFilings">
+                        <div class="card-container">
+                            <span class="news-date">{{secFiling.fillingDate}}</span> -
+                            <a target="_blank" [href]="secFiling.link" class="p-bot-10"><span>Link</span></a> |
+                            <a [href]="secFiling.finalLink" target="_blank"><span>Final Link</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!secFilingsState">
+                    <div class="content-loader"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row press-releases p-bot-30">
+            <div class="col-md-12" *ngIf="pressReleases.length > 0">
+                <h2 class="heading big-sub-heading">Press Releases</h2>
+                <div class="row flex-row">
+                    <div class="col-sm-6 ignore-me flex-col" *ngFor="let pressRelease of pressReleases">
+                        <div class="card-container">
+                            <h5 class="heading big-sub-heading p-bot-5">{{pressRelease.title}}</h5>
+                            <div><span class="news-date">{{pressRelease.date}}</span></div>
+                            <div class="news-text">{{pressRelease.text}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="global-loader-container active" *ngIf="globalService.loaderState">
+    <div class="loader"></div>
+</div>
