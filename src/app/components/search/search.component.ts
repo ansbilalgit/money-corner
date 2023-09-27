@@ -150,25 +150,25 @@ export class SearchComponent implements OnInit {
     navText: ['', ''],
     responsive: {
       0: {
-        items: 2
-      },
-      400: {
-        items: 2
-      },
-      600: {
         items: 3
       },
-      740: {
+      400: {
+        items: 3
+      },
+      600: {
         items: 4
       },
-      940: {
+      740: {
         items: 5
       },
-      1100: {
+      940: {
         items: 6
       },
-      1400: {
+      1100: {
         items: 7
+      },
+      1400: {
+        items: 8
       },
       1600: {
         items: 9
