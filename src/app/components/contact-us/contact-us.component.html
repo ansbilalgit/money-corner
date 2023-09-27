@@ -1,33 +1,41 @@
 <div class="footer-contact">
-    <h2>Contact Us</h2>
-    <p *ngIf="showInfoBlock" class="theme-color">{{infoMsg}}</p>
-    <form class="row" [formGroup]="contactForm" (ngSubmit)="sendInfo(contactForm.value)">
-        <div class="col-md-10 no-padding">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="text" formControlName="name" class="form-control" placeholder="Name">
+    <h2>Contact Us
+        <a style="color: inherit;" href="#collapseExample" data-toggle="collapse" (click)="collapsed = !collapsed" >
+            <i class="fa" [ngClass]="{'fa-angle-down': collapsed, 'fa-angle-up': !collapsed}"></i>
+        </a>
+    </h2>
+    <div class="collapse" id="collapseExample" >
+        <p *ngIf="showInfoBlock" class="theme-color">{{infoMsg}}</p>
+        <form class="row" [formGroup]="contactForm" (ngSubmit)="sendInfo(contactForm.value)">
+            <div class="col-md-10 no-padding">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="text" formControlName="name" class="form-control" placeholder="Name">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="email" formControlName="email" class="form-control" placeholder="Email id">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="number" formControlName="phno" class="form-control"
+                            placeholder="Phone No (Optional)">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <textarea class="form-control" formControlName="msg" placeholder="Message"></textarea>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="email" formControlName="email" class="form-control" placeholder="Email id">
+            <div class="col-md-2 no-padding">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-default full-block theme-bg"
+                        [disabled]="btnState">{{btnMsg}}</button>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="number" formControlName="phno" class="form-control" placeholder="Phone No (Optional)">
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="form-group">
-                    <textarea class="form-control" formControlName="msg" placeholder="Message"></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 no-padding">
-            <div class="col-md-12">
-                <button type="submit" class="btn btn-default full-block theme-bg" [disabled]="btnState">{{btnMsg}}</button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

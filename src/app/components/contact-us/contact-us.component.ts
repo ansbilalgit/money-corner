@@ -20,6 +20,7 @@ export class ContactUsComponent implements OnInit {
   infoMsg = "";
   showInfoBlock = true;
   btnState = false;
+  collapsed = true;
   contactSub: Subscription;
   constructor(fb: FormBuilder, public dataService: DataService) {
     this.contactForm = fb.group({
