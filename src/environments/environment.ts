@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiKey: 'b28705c255684013d1bceab79ce90d0e'
+  apiKey: 'b28705c255684013d1bceab79ce90d0e',
+  rootPath : 'http://localhost/money-technologies/be/data.php'
 };
 
 /*

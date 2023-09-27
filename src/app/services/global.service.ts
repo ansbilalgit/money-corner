@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { findIndex, uniqBy } from 'lodash';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class GlobalService {
@@ -8,9 +9,9 @@ export class GlobalService {
   allStocksData: Array<any> = [];
   currRoute = "home";
   userLoggedIn: EventEmitter<any> = new EventEmitter();
-   rootPath = 'https://www.findurstocks.com.au/be/data.php';
+  //  rootPath = 'https://www.findurstocks.com.au/be/data.php';
   apiUrl = 'https://financialmodelingprep.com/api/v3/';
-  // rootPath = 'http://localhost/money-technologies/be/data.php';
+  rootPath = environment.rootPath;
   isRnnChartDataReady = 0;
   portfolios: any = [];
   fRProfitablityChartData: any = {
