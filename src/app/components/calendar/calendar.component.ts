@@ -26,6 +26,7 @@ export class CalendarComponent implements OnInit {
   stockSplitPage: any = 1;
   constructor(private http: DataService){
     this.CountriesLists = this.CountriesLists.sort(this.compare);
+    this.country = 'AU';
     this.loadData();
   }
 
