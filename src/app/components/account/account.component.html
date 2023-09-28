@@ -72,14 +72,8 @@
                 <owl-carousel-o [options]="customOptions" *ngIf="carouselState">
                     <ng-container *ngFor="let data of GlobalIndexData">
                         <ng-template carouselSlide>
-                            <div class="carousel-card bg-white">
-                                <div *ngIf="isPossitive(data.changesPercentage)" class="pull-left status green">
-                                    <i class="fa fa-arrow-up"></i>
-                                </div>
-                                <div *ngIf="!isPossitive(data.changesPercentage)" class="pull-left status red">
-                                    <i class="fa fa-arrow-down"></i>
-                                </div>
-                                <div class="pull-right info">
+                            <div class="carousel-card bg-white" [ngClass]="{'border-green': isPossitive(data.changesPercentage), 'border-red': !isPossitive(data.changesPercentage)}">
+                                <div class="pull-left info">
                                     <div class="text-ellipsis" [title]="data.name">{{data.name}}</div>
                                     <div class="price-info">
                                         <span class="pull-left price">${{data.price}}</span>
