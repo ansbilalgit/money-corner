@@ -595,8 +595,8 @@ if($_GET['q'] == 'contact_user'){
   $msg = $postdata->msg;
 
   $textHere = "Name: ".$name.",<br>Email: ".$email.",<br>PhoneNo: ".$phno.",<br>Message: ".$msg;
-  $msg = "Hello Team, Mr/Ms ".$name.", Contacted to Findurstocks.com, <br><br>".$textHere;
-  // if(mail("moneycornertechnologies@gmail.com", "Message from Findurstocks.com", $msg)) {
+  $msg = "Hello Team, Mr/Ms ".$name.", Contacted to findurstocks.com.au, <br><br>".$textHere;
+  // if(mail("moneycornertechnologies@gmail.com", "Message from findurstocks.com.au", $msg)) {
   //   echo 1;
   // } else {
   //   echo null;
@@ -623,7 +623,7 @@ if($_GET['q'] == 'contact_user'){
   
   $mail->IsHTML(true);
   
-  $mail->Subject = "Message from Findurstocks.com";
+  $mail->Subject = "Message from findurstocks.com.au";
   $mail->Body = $msg;
   //$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
   

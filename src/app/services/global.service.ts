@@ -9,9 +9,9 @@ export class GlobalService {
   allStocksData: Array<any> = [];
   currRoute = "home";
   userLoggedIn: EventEmitter<any> = new EventEmitter();
-  //  rootPath = 'https://www.findurstocks.com.au/be/data.php';
+   rootPath = 'https://www.findurstocks.com.au/be/data.php';
   apiUrl = 'https://financialmodelingprep.com/api/v3/';
-  rootPath = environment.rootPath;
+  // rootPath = environment.rootPath;
   isRnnChartDataReady = 0;
   portfolios: any = [];
   fRProfitablityChartData: any = {
